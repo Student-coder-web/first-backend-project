@@ -11,7 +11,7 @@ app.use("/api/v1/course", courseRouter)
 
  async function main(){
     
-    await mongoose.connect("mongodb+srv://ajaykumbhar2005:samideli2005@cluster0.zmrj5ve.mongodb.net/corsera-app")
+    await mongoose.connect("")
     app.listen(3000);
     console.log("listening") 
 }
