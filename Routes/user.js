@@ -1,14 +1,17 @@
   const express = require("express");
-  const { Router } = express;
-  const userRouter =  Router(); 
-  const { userModel} = require("../db")
+ 
+  const userRouter =  express(); 
+  const { userModel, purchasesModel,courseModel} = require("../db")
   const { z } = require("zod")
   const bcrypt = require("bcrypt");
   userRouter.use(express.json());
   const jwt = require("jsonwebtoken")
   const {JWT_USER_SECRECT} = require("../config")
-  
+ 
+ const { adminRouter } = require("../Routes/admin");
+  const {userMiddleware } =require("../middleware/users")
 
+  
     userRouter.post("/signup", async function(req,res){
         
          const requirebody = z.object({
@@ -40,7 +43,7 @@
         })
     })
     userRouter.post("/signin",async function(req,res){
-      const { email,password }=req.body;
+      const { email,password } = req.body;
       const user = await userModel.findOne({
           email:email,
          
@@ -64,8 +67,22 @@
            
     })
     
-    userRouter.get("/purchases",function(req,res){
-    
+    userRouter.get("/purchases",userMiddleware ,async function(req,res){
+        const userId = req.userId;
+        const purchases = await purchasesModel.find({
+         userId
+        })
+        let purchasedCourseIds = [];
+        for(let i=0;i<purchasesModel.lenght;i++){
+         purchasedCourseIds.push(purchases[i].courseId)
+        }
+        const courseData = await courseModel.find({
+         _id: {$in: purchasedCourseIds}
+        })
+        res.json({
+         purchases,
+         courseData
+        })
     })
  module.exports = {
     userRouter:userRouter

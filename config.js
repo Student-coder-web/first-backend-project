@@ -1,4 +1,4 @@
-const JWT_ADMIN_SECRECT = "57184189hsdu";
+const JWT_ADMIN_SECRECT = "ilovekiara";
 const JWT_USER_SECRECT = "HDFSKHLKJASF"
 
 module.exports = {
